@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tip_mbogori/results.dart';
 
 class Input extends StatefulWidget {
    const Input({super.key});
@@ -52,18 +53,44 @@ class _InputState extends State<Input> {
               ),
             ),
           ),
-          ElevatedButton(onPressed: () {
-            double Bill=double.parse(_billcontroller.text);
-            double Tip=double.parse(_tipcontroller.text);
-            double nopersoncontroller=double.parse(_nopersoncontroller.text);
+            ElevatedButton(
+            onPressed: () {
+              final double bill =
+                double.tryParse(_billcontroller.text) ?? 0.0;
+                final double tip =
+                double.tryParse(_tipcontroller.text) ?? 0.0;
+                final int people = int.tryParse(_nopersoncontroller.text) ?? 1;
+                final double totalBill = total(bill, tip);
+                final double perPersonBill =
+                perpersonShare(totalBill, people);
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (context) => Results(
+                totalBill: totalBill,
+                perPersonBill: perPersonBill,
+                ),
+              ),
+            );
+            },
+            child: const Text("Calculate"),
+            ),
+            ],
+          ),
+        ),
+      );
+  
+  }
 
-          }, child: const Text("Calculate")),
-      ],
-      )
-      ),
-    );
+  double total(double bill, double tip) {
+    return bill + (bill * tip / 100);
+  }
+
+  double perpersonShare(double totalBill, int noPerson) {
+    return totalBill / noPerson;
+  }
+    
   }
         
 
 
-}
